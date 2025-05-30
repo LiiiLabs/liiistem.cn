@@ -75,6 +75,7 @@
       };
 
       // 1. 从 URL 中提取 code 和 key
+      alert(window.location.href);
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
       const key = urlParams.get("key");
