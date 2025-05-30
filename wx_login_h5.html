@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>微信授权登录</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
       .loading {
         position: fixed;
@@ -48,13 +49,22 @@
               },
             })
             .then((res) => {
+              if (res.data.code === -9001) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+                return Promise.reject(res.data);
+              }
               if (res.data.code !== 0) {
+                console.error("Response error:", res.data);
                 return Promise.reject(res.data);
               }
               return res.data;
             })
             .catch((error) => {
+              console.error("Request failed:", error);
               if (error.response) {
+                console.error("Error status:", error.response.status);
+                console.error("Error data:", error.response.data);
                 return Promise.reject(error.response.data);
               }
               return Promise.reject({
