@@ -45,7 +45,6 @@
             .post("/api" + path, params, {
               headers: {
                 "Content-Type": "application/json",
-                token: localStorage.getItem("token"),
               },
             })
             .then((res) => {
@@ -55,27 +54,21 @@
                 return Promise.reject(res.data);
               }
               if (res.data.code !== 0) {
-                console.error("Response error:", res.data);
                 return Promise.reject(res.data);
               }
               return res.data;
             })
             .catch((error) => {
-              console.error("Request failed:", error);
-              if (error.response) {
-                console.error("Error status:", error.response.status);
-                console.error("Error data:", error.response.data);
-                return Promise.reject(error.response.data);
-              }
-              return Promise.reject({
-                message: error.message || "网络请求失败",
-              });
+              console.error("请求失败:", error);
+              const errorMsg = error.response?.data?.message 
+                || error.message 
+                || "网络请求失败，请检查网络连接";
+              return Promise.reject({ message: errorMsg });
             });
         },
       };
 
       // 1. 从 URL 中提取 code 和 key
-      alert(window.location.href);
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
       const key = urlParams.get("key");
@@ -90,14 +83,10 @@
       http
         .post("/login/wxAuthLogin", { code, key })
         .then((response) => {
-          if (response.code !== 0) {
-            throw new Error(response.msg || "授权失败");
-          }
           window.close();
         })
         .catch((error) => {
-          const errorMsg = error.msg || "网络请求失败";
-          alert(`授权失败：${errorMsg}`);
+          alert(`授权失败：${error.message}`);
           window.history.back();
         });
     </script>
