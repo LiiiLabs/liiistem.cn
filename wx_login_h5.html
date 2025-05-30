@@ -68,7 +68,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
       const key = urlParams.get("key");
-      window.history.replaceState({}, document.title, window.location.pathname);
 
       if (!code || !key) {
         alert("微信授权失败：缺少必要参数");
