@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>微信授权登录</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <style>
       .loading {
         position: fixed;
@@ -84,10 +85,16 @@
         .post("/login/wxAuthLogin", { code, key })
         .then((response) => {
           if (response.data) {
-            document.querySelector('.loading p').textContent = '登录成功，正在跳转...';
-            setTimeout(() => {
-              window.close();
-            }, 1000);
+            document.querySelector('.loading p').textContent = '登录成功';
+            if (typeof WeixinJSBridge !== 'undefined') {
+              WeixinJSBridge.call('closeWindow');
+            } else {
+              try {
+                window.close();
+              } catch (e) {
+                document.querySelector('.loading p').textContent = '登录成功，请手动关闭此窗口';
+              }
+            }
           } else {
             throw new Error('登录失败：未获取到token');
           }
@@ -99,3 +106,4 @@
     </script>
   </body>
 </html>
+
