@@ -83,7 +83,14 @@
       http
         .post("/login/wxAuthLogin", { code, key })
         .then((response) => {
-          window.close();
+          if (response.data) {
+            document.querySelector('.loading p').textContent = '登录成功，正在跳转...';
+            setTimeout(() => {
+              window.close();
+            }, 1000);
+          } else {
+            throw new Error('登录失败：未获取到token');
+          }
         })
         .catch((error) => {
           alert(`授权失败：${error.message}`);
