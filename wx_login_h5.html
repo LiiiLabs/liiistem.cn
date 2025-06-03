@@ -85,6 +85,15 @@
         .post("/login/wxAuthLogin", { code, key })
         .then((response) => {
           if (response.data) {
+            localStorage.setItem('token', response.data.token);
+            if (response.data.userInfo) {
+              localStorage.setItem('userInfo', JSON.stringify({
+                nickName: response.data.userInfo.nickName || '未设置',
+                email: response.data.userInfo.email || '未设置',
+                vipLevelId: response.data.userInfo.vipLevelId,
+                vipExpireTime: response.data.userInfo.vipExpireTime || '无'
+              }));
+            }
             document.querySelector('.loading p').textContent = '登录成功';
             if (typeof WeixinJSBridge !== 'undefined') {
               WeixinJSBridge.call('closeWindow');
