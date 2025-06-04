@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>微信授权登录</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
     <style>
       .loading {
         position: fixed;
@@ -19,7 +18,7 @@
         height: 40px;
         margin: 0 auto;
         border: 4px solid #f3f3f3;
-        border-top: 4px solid #52c41a;
+        border-top: 4px solid #3498db;
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -61,10 +60,9 @@
             })
             .catch((error) => {
               console.error("请求失败:", error);
-              const errorMsg =
-                error.response?.data?.message ||
-                error.message ||
-                "网络请求失败，请检查网络连接";
+              const errorMsg = error.response?.data?.message 
+                || error.message 
+                || "网络请求失败，请检查网络连接";
               return Promise.reject({ message: errorMsg });
             });
         },
@@ -85,23 +83,7 @@
       http
         .post("/login/wxAuthLogin", { code, key })
         .then((response) => {
-          if (response.data) {
-            document.querySelector(".loading p").textContent = "登录成功";
-            setTimeout(() => {
-              if (typeof WeixinJSBridge !== "undefined") {
-                WeixinJSBridge.call("closeWindow");
-              } else {
-                try {
-                  window.close();
-                } catch (e) {
-                  document.querySelector(".loading p").textContent =
-                    "登录成功，请手动关闭此窗口";
-                }
-              }
-            }, 2000);
-          } else {
-            throw new Error("登录失败：未获取到token");
-          }
+          window.close();
         })
         .catch((error) => {
           alert(`授权失败：${error.message}`);
